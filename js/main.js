@@ -12,44 +12,42 @@
   var loadHair = true;
   var loadEyes = true;
 
-  var glitched = false;
-  var cleanTo = {};
-  for (var i = 0; i < 101; i++) {
-    cleanTo[i] = 0.0;
-  }
-
+  var lastGlitchTo = {};
 
   init();
   animate();
 
   function glitchFace() {
     if (face) {
-      if (glitched) {
-        tweenFace(cleanTo, 250, function() {
-          tweenToGlitch();
-        })
-      } else {
-        tweenToGlitch();
-        glitched = true;
-      }
+      var duration = 800 + Math.random() * 3200;
 
-      function tweenToGlitch () {
-        var to = {};
-        var number = Math.floor(Math.random() * 10) + 6;
-        for (var i = 0; i < number; i++) {
-          var idx = Math.floor(Math.random() * 101);
-          to[idx] = Math.random() * 0.2 + 0.8;
+      var lastGlitchResetTo = {};
+      for (var key in lastGlitchTo) {
+        lastGlitchResetTo[key] = 0.0;
+      }
+      tweenFace(lastGlitchResetTo, duration);
+
+      var to = {};
+      var number = Math.floor(Math.random() * 5) + 5;
+      for (var i = 0; i < number; i++) {
+        var idx = Math.floor(Math.random() * 101);
+        while (lastGlitchTo[idx] !== undefined) {
+          idx = Math.floor(Math.random() * 101);
         }
 
-        tweenFace(to, 5000, null);
+        to[idx] = Math.random() * 0.2 + 0.8;
       }
+
+      tweenFace(to, duration);
+
+      lastGlitchTo = to;
 
       function tweenFace (to, duration, callback) {
         var easings = [
           TWEEN.Easing.Linear.None,
           TWEEN.Easing.Quadratic.In, TWEEN.Easing.Quadratic.Out, TWEEN.Easing.Quadratic.InOut,
-          TWEEN.Easing.Bounce.In, TWEEN.Easing.Bounce.Out, TWEEN.Easing.Bounce.InOut,
-          TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
+          //TWEEN.Easing.Cubic.In, TWEEN.Easing.Cubic.Out, TWEEN.Easing.Cubic.InOut,
+          //TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
         ];
         var easing = easings[Math.floor(Math.random() * easings.length)];
 

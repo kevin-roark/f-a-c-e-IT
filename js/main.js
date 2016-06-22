@@ -12,37 +12,61 @@
   var loadHair = true;
   var loadEyes = true;
 
+  var glitched = false;
+  var cleanTo = {};
+  for (var i = 0; i < 101; i++) {
+    cleanTo[i] = 0.0;
+  }
+
+
   init();
   animate();
-  glitchFace();
 
   function glitchFace() {
     if (face) {
-      var to = {};
-      for (var i = 0; i < 3; i++) {
-        var idx = Math.floor(Math.random() * 101);
-        to[idx] = Math.random();
+      if (glitched) {
+        tweenFace(cleanTo, 250, function() {
+          tweenToGlitch();
+        })
+      } else {
+        tweenToGlitch();
+        glitched = true;
       }
 
-      var duration = 100 + Math.random() * 2000;
+      function tweenToGlitch () {
+        var to = {};
+        var number = Math.floor(Math.random() * 10) + 6;
+        for (var i = 0; i < number; i++) {
+          var idx = Math.floor(Math.random() * 101);
+          to[idx] = Math.random() * 0.2 + 0.8;
+        }
 
-      var easings = [
-        TWEEN.Easing.Linear.None,
-        TWEEN.Easing.Quadratic.In, TWEEN.Easing.Quadratic.Out, TWEEN.Easing.Quadratic.InOut,
-        TWEEN.Easing.Bounce.In, TWEEN.Easing.Bounce.Out, TWEEN.Easing.Bounce.InOut,
-        TWEEN.Easing.Elastic.In, TWEEN.Easing.Elastic.Out, TWEEN.Easing.Elastic.InOut,
-        TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
-      ];
-      var easing = easings[Math.floor(Math.random() * easings.length)];
+        tweenFace(to, 5000, null);
+      }
 
-      var tween = new TWEEN.Tween(face.morphTargetInfluences)
-        .to(to, duration)
-        .easing(easing)
-        .start();
+      function tweenFace (to, duration, callback) {
+        var easings = [
+          TWEEN.Easing.Linear.None,
+          TWEEN.Easing.Quadratic.In, TWEEN.Easing.Quadratic.Out, TWEEN.Easing.Quadratic.InOut,
+          TWEEN.Easing.Bounce.In, TWEEN.Easing.Bounce.Out, TWEEN.Easing.Bounce.InOut,
+          TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
+        ];
+        var easing = easings[Math.floor(Math.random() * easings.length)];
+
+        var tween = new TWEEN.Tween(face.morphTargetInfluences)
+          .to(to, duration)
+          .easing(easing);
+
+        if (callback) {
+          tween.onComplete(callback);
+        }
+
+        tween.start();
+      }
     }
-
-    setTimeout(glitchFace, duration + 200);
   }
+
+  document.onclick = glitchFace;
 
   function init () {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);

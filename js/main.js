@@ -20,7 +20,19 @@
   init();
   animate();
 
-  document.querySelector('.big-button').onclick = glitchFace;
+  var audioMap = {
+    click: makeAudio('media/click.mp3', 1),
+    breath: makeAudio()
+  };
+
+  document.querySelector('.big-button').onclick = function() {
+    glitchFace();
+
+    playAudio(audioMap.click);
+
+    audioMap.breath.src = randomBreathSrc();
+    playAudio(audioMap.breath);
+  };
 
   function glitchFace() {
     if (!face) return;
@@ -167,5 +179,24 @@
     camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
+  }
+
+  function makeAudio (src, volume) {
+    var audio = document.createElement('audio');
+    audio.preload = true;
+    audio.volume = volume !== undefined ? volume : 0.25;
+    if (src) {
+      audio.src = src;
+    }
+    return audio;
+  }
+
+  function playAudio (audio) {
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  function randomBreathSrc () {
+    return 'media/breath' + (Math.floor(Math.random() * 10) + 1) + '.mp3';
   }
 })();

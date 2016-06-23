@@ -138,6 +138,8 @@
 
       var material = new THREE.MultiMaterial(materials);
 
+      // This would center y rotation but at bad other costs (namely the morphs don't work lol)...
+      // geometry.translate(0, -165.3, 0);
       face = new THREE.Mesh(geometry, material);
       face.scale.set(1.5, 1.5, 1.5);
       face.position.set(0, -248, 420);
@@ -149,6 +151,7 @@
           var hairTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Hair_Diffuse.png');
           var material = new THREE.MeshBasicMaterial({ map: hairTexture });
 
+          // geometry.translate(0, -1.653, 0);
           var hair = new THREE.Mesh(geometry, material);
           hair.scale.set(100, 100, 100);
           face.add(hair);
@@ -159,6 +162,7 @@
         loader.load(modelsBase + 'eyes.json', function (geometry) {
           var material = new THREE.MeshBasicMaterial({ map: bodyTexture });
 
+          // geometry.translate(0, -1.653, 0);
           var eyes = new THREE.Mesh(geometry, material);
           eyes.scale.set(100, 100, 100);
           face.add(eyes);
@@ -230,6 +234,7 @@
 
     if (face && canRotate) {
       face.rotation.y = (mouseX / windowHalfX) * Math.PI * 0.1;
+      face.rotation.x = (mouseY / windowHalfY) * Math.PI * 0.0015;
     }
 
     camera.lookAt(scene.position);

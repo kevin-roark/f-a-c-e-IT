@@ -17,6 +17,8 @@
   var lastGlitchTween = null;
   var glitchBooster = 0.25;
 
+  var isWebGL = true;
+  var canRotate = true;
   var mouseX = 0, mouseY = 0;
   var windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
 
@@ -38,6 +40,13 @@
   };
 
   document.addEventListener('mousemove', onDocumentMouseMove, false);
+  document.addEventListener('keypress', onDocumentKeypress, false);
+
+  var freezeButton = document.querySelector('.freeze-instruction');
+  freezeButton.onclick = toggleRotation;
+
+  var saveButton = document.querySelector('.save-instruction');
+  saveButton.onclick = makeScreenshot;
 
   function glitchFace() {
     if (!face) return;
@@ -108,6 +117,7 @@
 
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x000000, 1, 15000);
+    window.scene = scene;
 
     var point = new THREE.PointLight(0xffffff);
     point.position.set(100, 0, 500);
@@ -156,7 +166,13 @@
       }
     });
 
-    renderer = new THREE.WebGLRenderer();
+    try {
+      renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    } catch (err) {
+      isWebGL = false;
+      renderer = new THREE.CanvasRenderer({});
+    }
+
     renderer.setClearColor(0xfefefe);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -181,6 +197,29 @@
     mouseY = ( event.clientY - windowHalfY ) * 2;
   }
 
+  function onDocumentKeypress (event) {
+    switch (event.keyCode) {
+      case 115:
+        makeScreenshot();
+        break;
+
+      case 102:
+        toggleRotation();
+        break;
+    }
+  }
+
+  function makeScreenshot () {
+    if (!renderer) return;
+    var screenshot = renderer.domElement.toDataURL();
+    window.open(screenshot, '_blank');
+  }
+
+  function toggleRotation () {
+    canRotate = !canRotate;
+    freezeButton.textContent = (canRotate ? 'Freeze me' : 'Unfreeze me') + ' ("f")';
+  }
+
   function animate () {
     requestAnimationFrame(animate);
     render();
@@ -189,7 +228,7 @@
   function render () {
     TWEEN.update();
 
-    if (face) {
+    if (face && canRotate) {
       face.rotation.y = (mouseX / windowHalfX) * Math.PI * 0.1;
     }
 

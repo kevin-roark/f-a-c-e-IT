@@ -27,6 +27,22 @@ body {
     text-decoration: underline;
   }
 
+.instructions {
+  position: fixed;
+  bottom: 6px; right: 6px;
+  font-size: 12px;
+  line-height: 1.75;
+  text-align: right;
+  font-family: monospace;
+}
+
+.instruction {
+  cursor: pointer;
+}
+  .instruction:hover, .instruction:focus {
+    font-style: italic;
+  }
+
 .big-button {
   cursor: pointer;
   color: transparent;
@@ -85,9 +101,7 @@ body {
     border-radius: 50px;
 
     top: auto;
-    left: auto;
     bottom: 20px;
-    right: 20px;
   }
     .big-button:hover, .big-button:focus {
       top: auto;

@@ -22,8 +22,21 @@
   var mouseX = 0, mouseY = 0;
   var windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
 
-  init();
-  animate();
+  var loadingIndicator = document.querySelector('.loading-indicator');
+  loadingIndicator._degrees = 0;
+  setTimeout(rotateLoadingIndicator, 1);
+  loadingIndicator._interval = setInterval(rotateLoadingIndicator, 3000);
+  function rotateLoadingIndicator() {
+    loadingIndicator._degrees += 360;
+    loadingIndicator.style.transform = loadingIndicator.style.webkitTransform = loadingIndicator.style.mozTransform = 'rotate(' + loadingIndicator._degrees + 'deg)';
+  }
+  function stopLoading(delay) {
+    clearInterval(loadingIndicator._interval);
+
+    setTimeout(function() {
+      loadingIndicator.classList.add('transparent');
+    }, delay);
+  }
 
   var audioMap = {
     click: makeAudio('media/click.mp3', 1),
@@ -47,6 +60,11 @@
 
   var saveButton = document.querySelector('.save-instruction');
   saveButton.onclick = makeScreenshot;
+
+  setTimeout(function() {
+    init();
+    animate();
+  }, 1);
 
   function glitchFace() {
     if (!face) return;
@@ -128,12 +146,15 @@
 
     var loader = new THREE.JSONLoader();
     loader.load(modelsBase + 'face.json', function (geometry, materials) {
+      stopLoading(800);
+
       var bodyTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Body_Diffuse.png');
 
       materials[0].map = bodyTexture;
       materials.forEach(function(material) {
-        material.transparent = false;
         material.morphTargets = true;
+
+        new TWEEN.Tween(material).to({ opacity: 1 }, 1600).onComplete(function() { material.transparent = false; }).start();
       });
 
       var material = new THREE.MultiMaterial(materials);

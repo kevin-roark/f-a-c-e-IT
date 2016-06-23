@@ -4,6 +4,6 @@ Facial Aspects and Caricature Expression Information Technology
 ### TODO
 * minified js assets
 * autoprefixed css
-* google analytics, facebook
-* loading screen
+* google analytics, facebook, og metadata
 * debug on phone
+* fix breathing lengths

@@ -17,6 +17,9 @@
   var lastGlitchTween = null;
   var glitchBooster = 0.25;
 
+  var mouseX = 0, mouseY = 0;
+  var windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
+
   init();
   animate();
 
@@ -33,6 +36,8 @@
     audioMap.breath.src = randomBreathSrc();
     playAudio(audioMap.breath);
   };
+
+  document.addEventListener('mousemove', onDocumentMouseMove, false);
 
   function glitchFace() {
     if (!face) return;
@@ -162,10 +167,18 @@
   }
 
   function onWindowResize () {
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
+
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function onDocumentMouseMove (event) {
+    mouseX = ( event.clientX - windowHalfX );
+    mouseY = ( event.clientY - windowHalfY ) * 2;
   }
 
   function animate () {
@@ -175,6 +188,10 @@
 
   function render () {
     TWEEN.update();
+
+    if (face) {
+      face.rotation.y = (mouseX / windowHalfX) * Math.PI * 0.1;
+    }
 
     camera.lookAt(scene.position);
 

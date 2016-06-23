@@ -121,7 +121,7 @@
     });
 
     renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0x222222);
+    renderer.setClearColor(0xfefefe);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.sortObjects = false;

@@ -5,3 +5,5 @@ Facial Aspects and Caricature Expression Information Technology
 * minified js assets
 * autoprefixed css
 * google analytics, facebook
+* loading screen
+* favicon

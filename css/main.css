@@ -10,23 +10,22 @@ body {
   position: fixed;
   top: 10px; right: 10px;
   font-size: 14px;
+  text-align: right;
+  line-height: 1.4;
 }
 
 .title {
   font-weight: bold;
 }
 
-.artist {
-  text-align: right;
+.artist a {
+  color: rgb(0, 0, 255);
+  text-shadow: 1px 1px 6px rgba(0, 0, 255, 0.1);
+  text-decoration: none;
 }
-  .artist a {
-    color: rgb(0, 0, 255);
-    text-shadow: 1px 1px 6px rgba(0, 0, 255, 0.1);
-    text-decoration: none;
+  .artist a:hover, .artist a:focus {
+    text-decoration: underline;
   }
-    .artist a:hover, .artist a:focus {
-      text-decoration: underline;
-    }
 
 .big-button {
   cursor: pointer;
@@ -77,8 +76,21 @@ body {
   }
 
 @media (max-width: 600px) {
+  .about {
+    font-size: 11px;
+  }
+
   .big-button {
     height: 100px; width: 100px;
     border-radius: 50px;
+
+    top: auto;
+    left: auto;
+    bottom: 20px;
+    right: 20px;
   }
+    .big-button:hover, .big-button:focus {
+      top: auto;
+      bottom: 22px;
+    }
 }

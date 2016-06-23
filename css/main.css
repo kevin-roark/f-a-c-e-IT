@@ -27,6 +27,10 @@ body {
     text-decoration: underline;
   }
 
+.social {
+  margin-top: 6px;
+}
+
 .instructions {
   position: fixed;
   bottom: 6px; right: 6px;

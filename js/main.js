@@ -31,7 +31,7 @@
     douglas: {
       base: 'models/Douglas/',
       texturePrefix: 'Douglas_',
-      facePosition: [0, -248, 420],
+      facePosition: [0, -250, 420],
       eyePosition: [-0.3, -0.3, -7],
       noHair: true
     },
@@ -313,10 +313,8 @@
 
     if (face && canRotate) {
       face.rotation.y = (mouseX / windowHalfX) * Math.PI * 0.1;
-      face.rotation.x = (mouseY / windowHalfY) * Math.PI * 0.0015;
+      camera.rotation.x = (mouseY / windowHalfY) * Math.PI * 0.003;
     }
-
-    camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }

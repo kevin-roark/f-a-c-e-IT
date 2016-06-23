@@ -6,4 +6,3 @@ Facial Aspects and Caricature Expression Information Technology
 * autoprefixed css
 * google analytics, facebook
 * loading screen
-* favicon

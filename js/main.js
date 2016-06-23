@@ -8,7 +8,12 @@
   var camera, scene, renderer;
 
   var face;
-  var modelsBase = 'models/prof/';
+  var modelsBase = 'models/Stefani/';
+  var modelsPrefix = 'Stefani_'
+  var hairPath = 'Hair_Diffuse.png';
+  var bodyPath = 'Body_Diffuse.png';
+  var hairBumpPath = 'Hair_Normal.png'
+  var bodyBumpPath = 'Body_Normal.png'
   var loadHair = true;
   var loadEyes = true;
 
@@ -148,7 +153,7 @@
     loader.load(modelsBase + 'face.json', function (geometry, materials) {
       stopLoading(800);
 
-      var bodyTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Body_Diffuse.png');
+      var bodyTexture = THREE.ImageUtils.loadTexture(modelsBase + modelsPrefix + bodyPath);
 
       materials[0].map = bodyTexture;
       materials.forEach(function(material) {
@@ -163,18 +168,22 @@
       // geometry.translate(0, -165.3, 0);
       face = new THREE.Mesh(geometry, material);
       face.scale.set(1.5, 1.5, 1.5);
-      face.position.set(0, -248, 420);
+      //ace.position.set(0, -225, 420); // Jacket y = -218, Douglas = -248, Prof= -248, Beanie = -233
+      face.position.set(0, -460, 325); // Stefani
       point.target = face;
       scene.add(face);
 
       if (loadHair) {
         loader.load(modelsBase + 'hair.json', function (geometry) {
-          var hairTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Hair_Diffuse.png');
+          var hairTexture = THREE.ImageUtils.loadTexture(modelsBase + modelsPrefix + hairPath);
           var material = new THREE.MeshBasicMaterial({ map: hairTexture });
 
           // geometry.translate(0, -1.653, 0);
           var hair = new THREE.Mesh(geometry, material);
           hair.scale.set(100, 100, 100);
+          //hair.position.set(0, 1, 0); // Jacket
+          //hair.position.set(0, 0, 1); // Beanie
+          hair.position.set(0.64, 0, 3); // Stefani
           face.add(hair);
         });
       }
@@ -186,6 +195,10 @@
           // geometry.translate(0, -1.653, 0);
           var eyes = new THREE.Mesh(geometry, material);
           eyes.scale.set(100, 100, 100);
+          //eyes.position.set(0, 0, 1.25); // Jacket
+          //eyes.position.set(-0.3, -0.3, -7); // Douglas
+          //eyes.position.set(0, 0, 0.75); // Beanie
+          eyes.position.set(0.74, -0.42, 2.52); // Beanie
           face.add(eyes);
         });
       }

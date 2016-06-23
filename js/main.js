@@ -5,10 +5,59 @@
   /// For body:
   /// Check Blend Shapes, still haven't figured out the best way to do textures but normal maps we can also apply manually so ~_~
 
+  var models = {
+    prof: {
+      base: 'models/prof/',
+      texturePrefix: 'business_prof_',
+      facePosition: [0, -248, 420],
+      eyePosition: [0, 0, 0],
+      hairPosition: [0, 0, 0]
+    },
+    stefani: {
+      base: 'models/Stefani/',
+      texturePrefix: 'Stefani_',
+      facePosition: [0, -460, 360],
+      noHair: true,
+      eyePosition: [0.74, -0.42, 2.52],
+      hairPosition: [0.64, 0, 3]
+    },
+    beanie: {
+      base: 'models/Beanie/',
+      texturePrefix: 'beanie_woman_',
+      facePosition: [0, -225, 420],
+      eyePosition: [0, 0, 0.75],
+      hairPosition: [0, 0, 1]
+    },
+    douglas: {
+      base: 'models/Douglas/',
+      texturePrefix: 'Douglas_',
+      facePosition: [0, -250, 420],
+      eyePosition: [-0.3, -0.3, -7],
+      noHair: true
+    },
+    jacket: {
+      base: 'models/Jacket/',
+      texturePrefix: 'jacket_',
+      facePosition: [0, -218, 420],
+      eyePosition: [0, 0, 1.25],
+      hairPosition: [0, 1, 0]
+    }
+  };
+  var textures = {
+    hair: 'Hair_Diffuse.png',
+    body: 'Body_Diffuse.png',
+    hairNormal: 'Hair_Normal.png',
+    bodyNormal: 'Body_Normal.png'
+  };
+  var modelNames = ['prof', 'stefani', 'beanie', 'douglas', 'jacket'];
+  var modelName = modelNames[Math.floor(Math.random() * modelNames.length)];
+  var model = models[modelName];
+
   var camera, scene, renderer;
 
   var face;
-  var modelsBase = 'models/prof/';
+  var modelsBase = 'models/Stefani/';
+  var modelsPrefix = 'Stefani_'
   var loadHair = true;
   var loadEyes = true;
 
@@ -137,7 +186,7 @@
     scene.fog = new THREE.Fog(0x000000, 1, 15000);
     window.scene = scene;
 
-    var point = new THREE.PointLight(0xffffff);
+    var point = new THREE.PointLight(0xffffff, 0.5);
     point.position.set(100, 0, 500);
     scene.add(point);
 
@@ -145,12 +194,18 @@
     scene.add(ambient);
 
     var loader = new THREE.JSONLoader();
-    loader.load(modelsBase + 'face.json', function (geometry, materials) {
+    loader.load(model.base + 'face.json', function (geometry, materials) {
       stopLoading(800);
 
-      var bodyTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Body_Diffuse.png');
+      var bodyTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.body);
+      var bodyNormal = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.bodyNormal);
 
       materials[0].map = bodyTexture;
+
+      if (!materials[0].normalMap) {
+        materials[0].normalMap = bodyNormal;
+      }
+
       materials.forEach(function(material) {
         material.morphTargets = true;
 
@@ -163,29 +218,32 @@
       // geometry.translate(0, -165.3, 0);
       face = new THREE.Mesh(geometry, material);
       face.scale.set(1.5, 1.5, 1.5);
-      face.position.set(0, -248, 420);
+      face.position.set(model.facePosition[0], model.facePosition[1], model.facePosition[2]);
       point.target = face;
       scene.add(face);
 
-      if (loadHair) {
-        loader.load(modelsBase + 'hair.json', function (geometry) {
-          var hairTexture = THREE.ImageUtils.loadTexture(modelsBase + 'business_prof_Hair_Diffuse.png');
-          var material = new THREE.MeshBasicMaterial({ map: hairTexture });
+      if (loadHair && !model.noHair) {
+        loader.load(model.base + 'hair.json', function (geometry) {
+          var hairTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.hair);
+          var hairNormal = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.hairNormal);
+          var material = new THREE.MeshPhongMaterial({ map: hairTexture, normalMap: hairNormal });
 
           // geometry.translate(0, -1.653, 0);
           var hair = new THREE.Mesh(geometry, material);
           hair.scale.set(100, 100, 100);
+          hair.position.set(model.hairPosition[0], model.hairPosition[1], model.hairPosition[2]);
           face.add(hair);
         });
       }
 
       if (loadEyes) {
-        loader.load(modelsBase + 'eyes.json', function (geometry) {
-          var material = new THREE.MeshBasicMaterial({ map: bodyTexture });
+        loader.load(model.base + 'eyes.json', function (geometry) {
+          var material = new THREE.MeshPhongMaterial({ map: bodyTexture, normalMap: bodyNormal });
 
           // geometry.translate(0, -1.653, 0);
           var eyes = new THREE.Mesh(geometry, material);
           eyes.scale.set(100, 100, 100);
+          eyes.position.set(model.eyePosition[0], model.eyePosition[1], model.eyePosition[2]);
           face.add(eyes);
         });
       }
@@ -255,10 +313,8 @@
 
     if (face && canRotate) {
       face.rotation.y = (mouseX / windowHalfX) * Math.PI * 0.1;
-      face.rotation.x = (mouseY / windowHalfY) * Math.PI * 0.0015;
+      camera.rotation.x = (mouseY / windowHalfY) * Math.PI * 0.003;
     }
-
-    camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }
@@ -279,6 +335,6 @@
   }
 
   function randomBreathSrc () {
-    return 'media/breath' + (Math.floor(Math.random() * 10) + 1) + '.mp3';
+    return 'media/breath' + (Math.floor(Math.random() * 15) + 1) + '.mp3';
   }
 })();

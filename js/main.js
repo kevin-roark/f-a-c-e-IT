@@ -13,58 +13,77 @@
   var loadEyes = true;
 
   var lastGlitchTo = {};
+  var lastGlitchTime = null;
+  var lastGlitchTween = null;
+  var glitchBooster = 0.25;
 
   init();
   animate();
 
+  document.querySelector('.big-button').onclick = glitchFace;
+
   function glitchFace() {
-    if (face) {
-      var duration = 800 + Math.random() * 3200;
+    if (!face) return;
+    if (lastGlitchTime && new Date() - lastGlitchTime <= 50) return;
 
-      var lastGlitchResetTo = {};
-      for (var key in lastGlitchTo) {
-        lastGlitchResetTo[key] = 0.0;
+    if (lastGlitchTween) {
+      lastGlitchTween.stop();
+      lastGlitchTween = null;
+    }
+
+    var duration = 400 + Math.random() * 4000;
+
+    var lastGlitchResetTo = {};
+    for (var key in lastGlitchTo) {
+      lastGlitchResetTo[key] = 0.0;
+    }
+    tweenFace(lastGlitchResetTo, duration);
+
+    var to = {};
+    var number = Math.floor(Math.random() * 6) + 3;
+    for (var i = 0; i < number; i++) {
+      var idx = randomMorphIndex();
+      while (lastGlitchTo[idx] !== undefined) {
+        idx = randomMorphIndex();
       }
-      tweenFace(lastGlitchResetTo, duration);
 
-      var to = {};
-      var number = Math.floor(Math.random() * 5) + 5;
-      for (var i = 0; i < number; i++) {
-        var idx = Math.floor(Math.random() * 101);
-        while (lastGlitchTo[idx] !== undefined) {
-          idx = Math.floor(Math.random() * 101);
-        }
+      to[idx] = Math.random() * glitchBooster + 1.0;
+    }
 
-        to[idx] = Math.random() * 0.2 + 0.8;
+    lastGlitchTween = tweenFace(to, duration, function() {
+      lastGlitchTween = null;
+    });
+
+    lastGlitchTo = to;
+    glitchBooster = Math.min(glitchBooster + 0.1, 4.69);
+    lastGlitchTime = new Date();
+
+    function tweenFace (to, duration, callback) {
+      var easings = [
+        TWEEN.Easing.Linear.None,
+        TWEEN.Easing.Quadratic.In, TWEEN.Easing.Quadratic.Out, TWEEN.Easing.Quadratic.InOut,
+        //TWEEN.Easing.Cubic.In, TWEEN.Easing.Cubic.Out, TWEEN.Easing.Cubic.InOut,
+        //TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
+      ];
+      var easing = easings[Math.floor(Math.random() * easings.length)];
+
+      var tween = new TWEEN.Tween(face.morphTargetInfluences)
+        .to(to, duration)
+        .easing(easing);
+
+      if (callback) {
+        tween.onComplete(callback);
       }
 
-      tweenFace(to, duration);
+      tween.start();
 
-      lastGlitchTo = to;
+      return tween;
+    }
 
-      function tweenFace (to, duration, callback) {
-        var easings = [
-          TWEEN.Easing.Linear.None,
-          TWEEN.Easing.Quadratic.In, TWEEN.Easing.Quadratic.Out, TWEEN.Easing.Quadratic.InOut,
-          //TWEEN.Easing.Cubic.In, TWEEN.Easing.Cubic.Out, TWEEN.Easing.Cubic.InOut,
-          //TWEEN.Easing.Exponential.In, TWEEN.Easing.Exponential.Out, TWEEN.Easing.Exponential.InOut
-        ];
-        var easing = easings[Math.floor(Math.random() * easings.length)];
-
-        var tween = new TWEEN.Tween(face.morphTargetInfluences)
-          .to(to, duration)
-          .easing(easing);
-
-        if (callback) {
-          tween.onComplete(callback);
-        }
-
-        tween.start();
-      }
+    function randomMorphIndex () {
+      return Math.floor(Math.random() * 101);
     }
   }
-
-  document.onclick = glitchFace;
 
   function init () {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
@@ -94,7 +113,7 @@
 
       face = new THREE.Mesh(geometry, material);
       face.scale.set(1.5, 1.5, 1.5);
-      face.position.set(0, -245, 400);
+      face.position.set(0, -248, 420);
       point.target = face;
       scene.add(face);
 

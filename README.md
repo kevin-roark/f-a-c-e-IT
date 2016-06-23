@@ -2,6 +2,4 @@
 Facial Aspects and Caricature Expression Information Technology
 
 ### TODO
-* minified js assets
-* autoprefixed css
 * other face models

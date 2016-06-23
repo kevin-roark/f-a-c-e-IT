@@ -337,6 +337,6 @@
   }
 
   function randomBreathSrc () {
-    return 'media/breath' + (Math.floor(Math.random() * 10) + 1) + '.mp3';
+    return 'media/breath' + (Math.floor(Math.random() * 15) + 1) + '.mp3';
   }
 })();

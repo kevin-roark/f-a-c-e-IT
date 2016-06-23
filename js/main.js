@@ -186,7 +186,7 @@
     scene.fog = new THREE.Fog(0x000000, 1, 15000);
     window.scene = scene;
 
-    var point = new THREE.PointLight(0xffffff);
+    var point = new THREE.PointLight(0xffffff, 0.5);
     point.position.set(100, 0, 500);
     scene.add(point);
 
@@ -198,8 +198,14 @@
       stopLoading(800);
 
       var bodyTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.body);
+      var bodyNormal = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.bodyNormal);
 
       materials[0].map = bodyTexture;
+
+      if (!materials[0].normalMap) {
+        materials[0].normalMap = bodyNormal;
+      }
+
       materials.forEach(function(material) {
         material.morphTargets = true;
 
@@ -219,7 +225,8 @@
       if (loadHair && !model.noHair) {
         loader.load(model.base + 'hair.json', function (geometry) {
           var hairTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.hair);
-          var material = new THREE.MeshBasicMaterial({ map: hairTexture });
+          var hairNormal = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.hairNormal);
+          var material = new THREE.MeshPhongMaterial({ map: hairTexture, normalMap: hairNormal });
 
           // geometry.translate(0, -1.653, 0);
           var hair = new THREE.Mesh(geometry, material);
@@ -231,7 +238,7 @@
 
       if (loadEyes) {
         loader.load(model.base + 'eyes.json', function (geometry) {
-          var material = new THREE.MeshBasicMaterial({ map: bodyTexture });
+          var material = new THREE.MeshPhongMaterial({ map: bodyTexture, normalMap: bodyNormal });
 
           // geometry.translate(0, -1.653, 0);
           var eyes = new THREE.Mesh(geometry, material);

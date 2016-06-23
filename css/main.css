@@ -27,6 +27,10 @@ body {
     text-decoration: underline;
   }
 
+.social {
+  margin-top: 6px;
+}
+
 .instructions {
   position: fixed;
   bottom: 6px; right: 6px;
@@ -42,6 +46,27 @@ body {
   .instruction:hover, .instruction:focus {
     font-style: italic;
   }
+
+.transparent {
+  opacity: 0;
+}
+
+.loading-indicator {
+  position: fixed;
+  left: 50%; width: 300px; margin-left: -150px;
+  top: 50%; height: 300px; margin-top: -150px;
+  border-radius: 150px;
+  line-height: 300px;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.25);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  z-index: 1;
+
+  transition: transform 3s linear, opacity 1s linear;
+}
 
 .big-button {
   cursor: pointer;

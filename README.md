@@ -2,4 +2,5 @@
 Facial Aspects and Caricature Expression Information Technology
 
 ### TODO
-* other face models
+* normal maps
+* camera rotation in y

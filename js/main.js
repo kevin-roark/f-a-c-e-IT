@@ -5,15 +5,59 @@
   /// For body:
   /// Check Blend Shapes, still haven't figured out the best way to do textures but normal maps we can also apply manually so ~_~
 
+  var models = {
+    prof: {
+      base: 'models/prof/',
+      texturePrefix: 'business_prof_',
+      facePosition: [0, -248, 420],
+      eyePosition: [0, 0, 0],
+      hairPosition: [0, 0, 0]
+    },
+    stefani: {
+      base: 'models/Stefani/',
+      texturePrefix: 'Stefani_',
+      facePosition: [0, -460, 360],
+      noHair: true,
+      eyePosition: [0.74, -0.42, 2.52],
+      hairPosition: [0.64, 0, 3]
+    },
+    beanie: {
+      base: 'models/Beanie/',
+      texturePrefix: 'beanie_woman_',
+      facePosition: [0, -225, 420],
+      eyePosition: [0, 0, 0.75],
+      hairPosition: [0, 0, 1]
+    },
+    douglas: {
+      base: 'models/Douglas/',
+      texturePrefix: 'Douglas_',
+      facePosition: [0, -248, 420],
+      eyePosition: [-0.3, -0.3, -7],
+      noHair: true
+    },
+    jacket: {
+      base: 'models/Jacket/',
+      texturePrefix: 'jacket_',
+      facePosition: [0, -218, 420],
+      eyePosition: [0, 0, 1.25],
+      hairPosition: [0, 1, 0]
+    }
+  };
+  var textures = {
+    hair: 'Hair_Diffuse.png',
+    body: 'Body_Diffuse.png',
+    hairNormal: 'Hair_Normal.png',
+    bodyNormal: 'Body_Normal.png'
+  };
+  var modelNames = ['prof', 'stefani', 'beanie', 'douglas', 'jacket'];
+  var modelName = modelNames[Math.floor(Math.random() * modelNames.length)];
+  var model = models[modelName];
+
   var camera, scene, renderer;
 
   var face;
   var modelsBase = 'models/Stefani/';
   var modelsPrefix = 'Stefani_'
-  var hairPath = 'Hair_Diffuse.png';
-  var bodyPath = 'Body_Diffuse.png';
-  var hairBumpPath = 'Hair_Normal.png'
-  var bodyBumpPath = 'Body_Normal.png'
   var loadHair = true;
   var loadEyes = true;
 
@@ -150,10 +194,10 @@
     scene.add(ambient);
 
     var loader = new THREE.JSONLoader();
-    loader.load(modelsBase + 'face.json', function (geometry, materials) {
+    loader.load(model.base + 'face.json', function (geometry, materials) {
       stopLoading(800);
 
-      var bodyTexture = THREE.ImageUtils.loadTexture(modelsBase + modelsPrefix + bodyPath);
+      var bodyTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.body);
 
       materials[0].map = bodyTexture;
       materials.forEach(function(material) {
@@ -168,37 +212,31 @@
       // geometry.translate(0, -165.3, 0);
       face = new THREE.Mesh(geometry, material);
       face.scale.set(1.5, 1.5, 1.5);
-      //ace.position.set(0, -225, 420); // Jacket y = -218, Douglas = -248, Prof= -248, Beanie = -233
-      face.position.set(0, -460, 325); // Stefani
+      face.position.set(model.facePosition[0], model.facePosition[1], model.facePosition[2]);
       point.target = face;
       scene.add(face);
 
-      if (loadHair) {
-        loader.load(modelsBase + 'hair.json', function (geometry) {
-          var hairTexture = THREE.ImageUtils.loadTexture(modelsBase + modelsPrefix + hairPath);
+      if (loadHair && !model.noHair) {
+        loader.load(model.base + 'hair.json', function (geometry) {
+          var hairTexture = THREE.ImageUtils.loadTexture(model.base + model.texturePrefix + textures.hair);
           var material = new THREE.MeshBasicMaterial({ map: hairTexture });
 
           // geometry.translate(0, -1.653, 0);
           var hair = new THREE.Mesh(geometry, material);
           hair.scale.set(100, 100, 100);
-          //hair.position.set(0, 1, 0); // Jacket
-          //hair.position.set(0, 0, 1); // Beanie
-          hair.position.set(0.64, 0, 3); // Stefani
+          hair.position.set(model.hairPosition[0], model.hairPosition[1], model.hairPosition[2]);
           face.add(hair);
         });
       }
 
       if (loadEyes) {
-        loader.load(modelsBase + 'eyes.json', function (geometry) {
+        loader.load(model.base + 'eyes.json', function (geometry) {
           var material = new THREE.MeshBasicMaterial({ map: bodyTexture });
 
           // geometry.translate(0, -1.653, 0);
           var eyes = new THREE.Mesh(geometry, material);
           eyes.scale.set(100, 100, 100);
-          //eyes.position.set(0, 0, 1.25); // Jacket
-          //eyes.position.set(-0.3, -0.3, -7); // Douglas
-          //eyes.position.set(0, 0, 0.75); // Beanie
-          eyes.position.set(0.74, -0.42, 2.52); // Beanie
+          eyes.position.set(model.eyePosition[0], model.eyePosition[1], model.eyePosition[2]);
           face.add(eyes);
         });
       }
